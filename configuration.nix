@@ -22,6 +22,11 @@
   time.timeZone = "Europe/Copenhagen";
   i18n.defaultLocale = "en_DK.UTF-8";
 
+  location = {
+    latitude = 56.15;
+    longitude = 10.1;
+  };
+
   console = {
     font = "Lat2-Terminus16";
     useXkbConfig = true;
@@ -42,6 +47,18 @@
       backend = "glx";
     };
 
+    redshift = {
+      enable = true;
+      brightness = {
+        day = "1";
+        night = ".5";
+      };
+      temperature = {
+        day = 6500;
+        night = 3000;
+      };
+    };
+
     xserver = {
       enable = true;
       layout = "dk";
@@ -54,7 +71,7 @@
     };
 
     logind.extraConfig = ''
-      HandlePowerKey=ignore
+      HandlePowerKey=suspend
     '';
   };
 
@@ -79,6 +96,10 @@
           set number relativenumber
           syntax on
           set ttyfast
+          let &t_ut=""
+          set termguicolors
+          set background=dark
+          colorscheme onedark
         '';
         }
       )
@@ -104,6 +125,22 @@
       lxappearance
       pavucontrol
     ];
+  };
+
+  programs.gphoto2.enable = true;
+
+  users.users.joshua = {
+    description = "Joshua Seiger-Eatwell";
+    isNormalUser = true;
+    extraGroups = [ 
+      "wheel"
+      "camera"
+      "video"
+      "audio"
+      "input"
+      ];
+    group = "users";
+    home = "/home/joshua";
   };
 
   system = {
