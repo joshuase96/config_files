@@ -16,8 +16,8 @@ myBorderW = 0
 myWorkSpaces = ["1", "2", "3", "4", "5"]
 
 myTerm    = "kitty"
-myBrowser = "firefox"
 myFileManager = "pcmanfm"
+myBrowser = "firefox"
 myAppLauncher = "rofi -show run"
 
 myStartupHook = do

@@ -7,6 +7,7 @@
     ];
 
   boot = {
+    kernelPackages = pkgs.linuxPackages_latest;
     loader = {
       systemd-boot.enable = true;
       efi.canTouchEfiVariables = true;
@@ -16,7 +17,7 @@
   networking = {
     hostName = "thinkpad";
     networkmanager.enable = true;
-    firewall.enable = false;
+    firewall.enable = true;
   };  
 
   time.timeZone = "Europe/Copenhagen";
@@ -36,43 +37,36 @@
   hardware.pulseaudio.enable = true;
 
   services = {
-    gvfs.enable = true;
-    tlp.enable = true;
-
-    picom = {
-      enable = true;
-      inactiveOpacity = 0.8;
-      activeOpacity = 1;
-      vSync = true;
-      backend = "glx";
-    };
-
-    redshift = {
-      enable = true;
-      brightness = {
-        day = "1";
-        night = ".5";
-      };
-      temperature = {
-        day = 6500;
-        night = 3000;
-      };
-    };
-
     xserver = {
       enable = true;
       layout = "dk";
       xkbOptions = "caps:escape";
-      libinput.enable = true;
-      windowManager.xmonad = {
+      libinput = {
         enable = true;
-        enableContribAndExtras = true;
+        touchpad.naturalScrolling = true;
+      };
+      displayManager.gdm.enable = true;
+      desktopManager.gnome = {
+        enable = true;
       };
     };
+
+    gnome.core-utilities.enable = false;
 
     logind.extraConfig = ''
       HandlePowerKey=suspend
     '';
+  };
+
+  fonts = {
+    fonts = with pkgs; [
+      jetbrains-mono
+    ];
+    fontconfig = {
+      defaultFonts = {
+        monospace = [ "JetBrains Mono" ];
+      };
+    };
   };
 
   nixpkgs.config.allowUnfree = true;
@@ -84,6 +78,7 @@
         name = "vim";
         vimrcConfig.customRC = ''
           set nocompatible
+          set backspace=indent,eol,start
           set showmatch
           set ignorecase
           set hlsearch
@@ -103,31 +98,44 @@
         '';
         }
       )
-      wget
+
       curl
-      unzip
       git
+
       firefox
       darktable
       keepassxc
       libreoffice
-      htop
       signal-desktop
-      kitty
-      pcmanfm
-      rofi
-      neofetch
-      haskell-language-server
-      cabal-install
-      ghc
-      haskellPackages.xmobar
-      nitrogen
-      lxappearance
-      pavucontrol
+      vscode
+      virt-manager
+
+      gnome.gnome-terminal
+      gnome.nautilus
+      gnome.file-roller
+      gnome.eog
+      gnome.gnome-tweaks
+      gnome.gnome-bluetooth
+      gnome.gnome-screenshot
+      gnome.gnome-calculator
     ];
   };
 
-  programs.gphoto2.enable = true;
+  programs = {
+    dconf.enable = true;
+  };
+
+  virtualisation = {
+    podman = {
+      enable = true;
+      dockerCompat = true;
+    };
+
+    libvirtd = {
+      enable = true;
+      qemu.ovmf.enable = true;
+    };
+  };
 
   users.users.joshua = {
     description = "Joshua Seiger-Eatwell";
@@ -138,10 +146,13 @@
       "video"
       "audio"
       "input"
+      "libvirtd"
       ];
     group = "users";
     home = "/home/joshua";
   };
+
+  security.sudo.wheelNeedsPassword = false;
 
   system = {
     copySystemConfiguration = true;
